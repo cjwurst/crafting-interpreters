@@ -41,6 +41,12 @@ class AstRpnPrinter implements Expr.Visitor<String> {
         return rpnFormat(expr.operator.lexeme, expr.right);
     }
 
+    @Override
+    public String visitTernaryExpr(Expr.Ternary expr) {
+        return rpnFormat(expr.operatorLeft.lexeme, expr.left, expr.middle, 
+            expr.right);
+    }
+
     private String rpnFormat(String name, Expr... exprs) {
         StringBuilder builder = new StringBuilder();
 

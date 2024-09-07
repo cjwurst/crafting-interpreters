@@ -14,18 +14,47 @@ class Parser {
         this.tokens = tokens;
     }
 
+    Expr parse() {
+        try {
+            return expression();
+        } catch (ParseError error) {
+            return null;
+        }
+    }
+
     private Expr expression() {
-        return equality();
+        return ternaryConditional();
+    }
+
+    private Expr ternaryConditional() {
+        Expr expr = equality();
+
+        if (match(QUESTION)) {
+            Token question = previous();
+            Expr middle = ternaryConditional();
+            Token colon = consume(COLON, 
+                "Expect ':' after ternary conditional.");
+            Expr right = ternaryConditional();
+            expr = new Expr.Ternary(expr, question, middle, colon, right);
+        }
+
+        return expr;
     }
 
     private Expr equality() {
         Expr expr = comparison();
 
-        while (match(BANG_EQUAL, EQUAL_EQUAL)) {
+        if (match(BANG_EQUAL, EQUAL_EQUAL)) {
             Token operator = previous();
-            Expr right = comparison();
+            Expr right = equality();
             expr = new Expr.Binary(expr, operator, right);
         }
+
+        // while (match(BANG_EQUAL, EQUAL_EQUAL)) {
+        //     Token operator = previous();
+        //     Expr right = comparison();
+        //     expr = new Expr.Binary(expr, operator, right);
+        // }
 
         return expr;
     }
@@ -90,6 +119,8 @@ class Parser {
             consume(RIGHT_PAREN, "Expect ')' after expression.");
             return new Expr.Grouping(expr);
         }
+
+        throw error(peek(), "Expect expression.");
     }
 
     private boolean match(TokenType... types) {
