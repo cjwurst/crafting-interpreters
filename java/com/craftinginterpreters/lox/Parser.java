@@ -44,17 +44,11 @@ class Parser {
     private Expr equality() {
         Expr expr = comparison();
 
-        if (match(BANG_EQUAL, EQUAL_EQUAL)) {
+        while (match(BANG_EQUAL, EQUAL_EQUAL)) {
             Token operator = previous();
-            Expr right = equality();
+            Expr right = comparison();
             expr = new Expr.Binary(expr, operator, right);
         }
-
-        // while (match(BANG_EQUAL, EQUAL_EQUAL)) {
-        //     Token operator = previous();
-        //     Expr right = comparison();
-        //     expr = new Expr.Binary(expr, operator, right);
-        // }
 
         return expr;
     }
