@@ -81,6 +81,17 @@ class Interpreter implements Expr.Visitor<Object> {
         return null;
     }
 
+    @Override
+    public Object visitTernaryExpr(Expr.Ternary expr) {
+        if (expr.operatorLeft == QUESTION && expr.operatorRight == COLON) {
+            if (evaluate(expr.left)) {
+                return evaluate(expr.middle)
+            } else {
+                return evaluate(expr.right)
+            }
+        }
+    }
+
     private Object evaluate(Expr expr) {
         return expr.accept(this);
     }
