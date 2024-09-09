@@ -68,7 +68,6 @@ class Interpreter implements Expr.Visitor<Object> {
                 }
                 throw new RuntimeError(expr.operator,
                     "Operands must be two numbers or two strings.");
-                break;
             case SLASH:
                 checkNumberOperands(expr.operator, left, right);
                 return (double)left / (double)right;
@@ -83,13 +82,16 @@ class Interpreter implements Expr.Visitor<Object> {
 
     @Override
     public Object visitTernaryExpr(Expr.Ternary expr) {
-        if (expr.operatorLeft == QUESTION && expr.operatorRight == COLON) {
-            if (evaluate(expr.left)) {
-                return evaluate(expr.middle)
+        if (expr.operatorLeft.type == TokenType.QUESTION 
+            && expr.operatorRight.type == TokenType.COLON) {
+            if (isTruthy(evaluate(expr.left))) {
+                return evaluate(expr.middle);
             } else {
-                return evaluate(expr.right)
+                return evaluate(expr.right);
             }
         }
+        
+        return null;
     }
 
     private Object evaluate(Expr expr) {
