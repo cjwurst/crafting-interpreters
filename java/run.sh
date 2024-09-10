@@ -1,1 +1,2 @@
-java com.craftinginterpreters.lox.Lox
+#!/bin/bash
+java com.craftinginterpreters.lox.Lox $1
