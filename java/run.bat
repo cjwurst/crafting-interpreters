@@ -1,1 +1,1 @@
-java com.craftinginterpreters.lox.Lox
+java com.craftinginterpreters.lox.Lox %*
